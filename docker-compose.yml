@@ -1,0 +1,32 @@
+version: '2.2'
+services:
+  apache2:
+    build: ./build/apache2
+    container_name: apache2-php7.4
+    volumes:
+      - ./volumes/etc/apache2/conf.d/nxs-std.conf:/etc/apache2/conf.d/nxs-std.conf:ro
+      - ./volumes/etc/apache2/sites-enabled:/etc/apache2/sites-enabled:ro
+      - ./volumes/etc/php/conf.d/nxs-std.ini:/usr/local/etc/php/conf.d/nxs-std.ini:ro
+      - ./volumes/etc/apache2/mods-enabled/status.conf:/etc/apache2/mods-enabled/status.conf:ro
+      - ./volumes/etc/apache2/mods-enabled/mpm_prefork.conf:/etc/apache2/mods-enabled/mpm_prefork.conf:ro
+      - /home/bitrix/:/home/bitrix/
+      - /tmp/php_sessions/:/tmp/php_sessions/
+      - /tmp/php_upload/:/tmp/php_upload/
+      - /var/log/httpd:/var/log/httpd/
+    networks:
+      default:
+        ipv4_address: 172.24.1.4
+    extra_hosts:
+     - "site.ru:194.67.105.40"
+    cap_add:
+      - SYS_NICE
+      - DAC_READ_SEARCH
+    restart: always
+networks:
+  default:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.24.1.0/29
+    driver_opts:
+      com.docker.network.bridge.name: "br2-php74"
